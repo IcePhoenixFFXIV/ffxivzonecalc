@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FFXIV Time to Zone Calc</title>
+</head>
+<body>
+  <div style="margin-bottom:20px;">
+    Local:
+    <input type="date" id="my-date"/> 
+    <input type="time" id="my-time"/> 
+    <button id="recalc">Recalculate</button>
+    <br />
+    UTC:
+    <input type="date" id="utc-date" readonly /> 
+    <input type="time" id="utc-time" readonly />
+    <br />
+    UTC Starting Hour:
+    <input type="date" id="utc-block-date" readonly />
+    <input type="time" id="utc-block-time" readonly />
+    <br />
+    
+    UTC Epoch:
+    <input type="date" id="epoch-utc-date" readonly />
+    <input type="time" id="epoch-utc-time" readonly />
+  </div>
+
+  <div>
+    <div>
+      Hour difference between now and index 0: <input type="text" id="hour-diff" />
+    </div>
+    <div>
+      Route Table Index: <input type="text" id="route-table-index" />
+      Next Route Table Index: <input type="text" id="route-table-index-next" />
+    <div>
+  </div>
+  
+  <script>
+    var millisecondToHourRatio = 60*60*1000;
+    var lengthOfIDKRouteTable = 144;
+    var epochUTCDate = Date.UTC(2021, 0, 5, 16, 0, 0);
+    var hoursPerPeriod = 2;
+
+    function getUTCFormattedDateTime(date) {      
+      var utcDay = date.getUTCDate();
+      var utcMonth = date.getUTCMonth() +1;
+      var utcYear = date.getUTCFullYear();
+      var utcHour = date.getUTCHours();
+      var utcDateTime = new Date(Date.UTC(utcYear, utcMonth-1, utcDay, utcHour));
+      var utcDayFormatted = utcDay < 10 ? "0" + utcDay : +utcDay;
+      var utcMonthFormatted = utcMonth < 10 ? "0" + utcMonth : +utcMonth;
+      var utcHourFormatted = utcHour < 10 ? "0" + utcHour: +utcHour;
+      var utcToday = utcYear + "-" + utcMonthFormatted + "-" + utcDayFormatted;       
+      var utcHourInitial = utcHourFormatted + ":00:00";      
+
+      // go back an hour if not exactly on 2-hour block start and cascade if midnight
+      if (utcHour % 2 == 1) {
+        if (utcHour < 1) {
+          if (utcMonth < 1) {
+            utcYear -= 1;
+          }
+          utcMonth -= 1;
+        }
+        utcHour -= 1;
+      }
+      if (utcDay < 10) utcDay = "0" + utcDay;
+      if (utcMonth < 10) utcMonth = "0" + utcMonth;
+      if (utcHour < 10) utcHour = "0" + utcHour;
+      var utcTodayBlock = utcYear + "-" + utcMonth + "-" + utcDay;       
+      var utcHourBlock = utcHour + ":00:00";
+      var utcBlockDateTime = new Date(Date.UTC(utcYear, utcMonth-1, utcDay, utcHour));
+      
+      return { utcToday, utcHour: utcHourInitial, utcTodayBlock, utcHourBlock, utcBlockDateTime  };
+    }
+
+    function initDates(date) {
+      if (date == null) {
+        date = new Date();
+        var day = date.getDate();
+        if (day < 10) day = "0" + day;
+
+        var month = date.getMonth() +1;
+        if (month < 10) month = "0" + month;
+
+        var year = date.getFullYear();
+
+        var today = year + "-" + month + "-" + day;       
+
+        var hour = date.getHours();
+        if (hour < 10) hour = "0" + hour;
+        var thisHour = hour + ":00:00"
+        document.getElementById("my-date").value = today;
+        document.getElementById("my-time").value = thisHour;
+      }
+      initFormattedDateTime(date);
+    }
+
+    function initFormattedDateTime(date) {
+      var formattedDateTime = getUTCFormattedDateTime(date);
+      document.getElementById("utc-date").value = formattedDateTime.utcToday;
+      document.getElementById("utc-time").value = formattedDateTime.utcHour;
+      document.getElementById("utc-block-date").value = formattedDateTime.utcTodayBlock;
+      document.getElementById("utc-block-time").value = formattedDateTime.utcHourBlock;
+
+      epochDate = new Date(epochUTCDate);
+      formatedEpochDateTime = getUTCFormattedDateTime(epochDate);
+      document.getElementById("epoch-utc-date").value = formatedEpochDateTime.utcTodayBlock;
+      document.getElementById("epoch-utc-time").value = formatedEpochDateTime.utcHourBlock;
+    }
+
+    function calculateIndexFromDates() {
+      var date = new Date( document.getElementById("utc-block-date").value + " " + document.getElementById("utc-block-time").value + " UTC");
+      var formattedDateTime = getUTCFormattedDateTime(date);
+      var utcBlockTime = formattedDateTime.utcBlockDateTime;
+      var utcEpoch = new Date(document.getElementById("epoch-utc-date").value + " " + document.getElementById("epoch-utc-time").value + " UTC");
+      var hourDiff = (utcBlockTime - utcEpoch) / millisecondToHourRatio;
+      if (hourDiff < 0) {
+        hourDiff += 144;
+      }
+      document.getElementById("hour-diff").value = hourDiff;
+
+      var tableIndex = (hourDiff / hoursPerPeriod) % lengthOfIDKRouteTable;
+      var nextTableIndex = ( tableIndex + 1 ) % lengthOfIDKRouteTable;
+      document.getElementById("route-table-index").value = tableIndex;
+      document.getElementById("route-table-index-next").value = nextTableIndex;
+    }
+
+    function calculateIndexOnChange(event) {
+      initDates(new Date(document.getElementById("my-date").value + " " + document.getElementById("my-time").value) )
+      calculateIndexFromDates();
+    }
+    
+    initDates(null);
+    calculateIndexFromDates();
+
+    document.getElementById("recalc").addEventListener("click", calculateIndexOnChange);
+  </script>
+</body>
+</html>
