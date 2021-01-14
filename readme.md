@@ -7,10 +7,10 @@ This tool calculates a the index based of the length of the Route Table (current
 - Use IKDRoute value to get the 3 IKDSpots and their respective IKDTimeDefine values
   - Spot 0 is IKDSpot zone 1
   - Spot 1 is IKDTimeDefine for zone 1
-  - Spot 0 is IKDSpot zone 2
-  - Spot 1 is IKDTimeDefine for zone 2
-  - Spot 0 is IKDSpot zone 3
-  - Spot 1 is IKDTimeDefine for zone 3
+  - Spot 3 is IKDSpot zone 2
+  - Spot 4 is IKDTimeDefine for zone 2
+  - Spot 5 is IKDSpot zone 3
+  - Spot 6 is IKDTimeDefine for zone 3
 - Use IKDSpot to reference the Fishing Spots for normal and spectral which can be checked with Fishing Spot from fishing record
 
 ## IKDTimeDefine Reference
