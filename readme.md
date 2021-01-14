@@ -1,8 +1,8 @@
-#FFXIV Ocean Fishing Route Index Calculator
+# FFXIV Ocean Fishing Route Index Calculator
 
 This tool calculates a the index based of the length of the Route Table (currently 144) and an epoch date (currently 2021-01-05 16:00:00 UTC), works from patch 5.4 as long as epoch doesn't change and length of route table (IKDRouteTable) is automatically calculated.
 
-Next steps
+## Next steps
 - Use this index on IKDRouteTable to get the IKDRoute
 - Use IKDRoute value to get the 3 IKDSpots and their respective IKDTimeDefine values
   - Spot 0 is IKDSpot zone 1
