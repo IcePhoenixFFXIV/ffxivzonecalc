@@ -12,3 +12,8 @@ This tool calculates a the index based of the length of the Route Table (current
   - Spot 0 is IKDSpot zone 3
   - Spot 1 is IKDTimeDefine for zone 3
 - Use IKDSpot to reference the Fishing Spots for normal and spectral which can be checked with Fishing Spot from fishing record
+
+## IKDTimeDefine Reference
+- 1 is Sunset
+- 2 is Night
+- 3 is Day
