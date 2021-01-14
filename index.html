@@ -114,7 +114,7 @@
       var utcEpoch = new Date(document.getElementById("epoch-utc-date").value + " " + document.getElementById("epoch-utc-time").value + " UTC");
       var hourDiff = (utcBlockTime - utcEpoch) / millisecondToHourRatio;
       if (hourDiff < 0) {
-        hourDiff += lengthOfIDKRouteTable;
+        hourDiff += lengthOfIDKRouteTable * hoursPerPeriod;
       }
       document.getElementById("hour-diff").value = hourDiff;
 
